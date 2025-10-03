@@ -20,7 +20,7 @@ This repository contains a machine learning project developed as part of the *Ma
 
 - `MLProjectDiPilato.ipynb`: Main notebook containing data exploration, preprocessing, model training, and evaluation.
 - `Init.py`: Handles Python package installation and environment setup.
-- *(Dataset file is not included. See below for download instructions.)*
+- `StudentDepressionDataset.csv`: dataset
 
 ---
 
@@ -33,16 +33,6 @@ The dataset contains responses from students across a range of factors:
 - **Family History**: Mental illness in family
 - **Psychological**: Stress levels, suicidal thoughts, self-harm, anxiety, etc.
 
-**Download the dataset manually** from Kaggle and place it in your working directory:
-👉 [https://www.kaggle.com/datasets/hopesb/student-depression-dataset](https://www.kaggle.com/datasets/hopesb/student-depression-dataset)
-
-Filename: `StudentDepressionDataset.csv`
-
----
-
-## 🔧 Setup & Installation
-
-### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/student-depression-ml.git
