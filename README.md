@@ -332,6 +332,4 @@ This project is developed for academic purposes as part of the Machine Learning 
 
 **Disclaimer:** This is an educational project. The model's predictions should not be used for actual medical diagnosis or treatment decisions.
 
----
 
-⭐ If you found this project helpful, please consider giving it a star!
