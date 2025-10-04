@@ -302,7 +302,7 @@ This project demonstrates proficiency in:
 
 ## 👨‍💻 Author
 
-**Filippo Di Pilato**  
+**Matteo Di Pilato**  
 Bachelor in Artificial Intelligence  
 University of Pavia (UNIPV)  
 Academic Year 2024/2025
