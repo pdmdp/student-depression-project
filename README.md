@@ -273,25 +273,6 @@ This project demonstrates proficiency in:
 - Model trained on specific demographic (may not generalize globally)
 - Temporal aspects of depression not captured
 
-## 📝 Future Improvements
-
-### Short-term
-- [ ] Implement SHAP values for feature importance and model interpretability
-- [ ] Add confidence intervals and prediction probabilities
-- [ ] Create interactive visualizations with Plotly
-- [ ] Develop feature importance analysis
-
-### Medium-term
-- [ ] Explore ensemble methods (stacking, voting classifiers)
-- [ ] Implement deep learning approaches (Neural Networks, Autoencoders)
-- [ ] Collect more diverse data to improve generalization
-- [ ] Add temporal features (time-series patterns)
-
-### Long-term
-- [ ] Develop web application for model deployment (Streamlit/Flask)
-- [ ] Integrate with student wellness programs
-- [ ] Create multi-class severity prediction (mild, moderate, severe)
-- [ ] Build recommendation system for intervention strategies
 
 ## 📚 References
 
@@ -307,8 +288,6 @@ Bachelor in Artificial Intelligence
 University of Pavia (UNIPV)  
 Academic Year 2024/2025
 
-📧 Contact: [Your email if you want to add it]  
-🔗 LinkedIn: [Your LinkedIn if you want to add it]
 
 ## 📄 License
 
