@@ -29,7 +29,7 @@ The original notebook explores Perceptron, logistic regression, random forest an
 
 ![Confusion matrices for the two reviewed logistic models](images/review-confusion-matrices.png)
 
-The original notebook remains available as the submitted work. Its exploratory search includes invalid oversampling candidates and a shifted XGBoost learning-rate distribution; those searches are not used by the reviewed models.
+The original submission is retained separately. Its exploratory resampling and XGBoost searches are not used by the reviewed models.
 
 ## Data and protocol
 
@@ -46,7 +46,7 @@ python -m pip install -r requirements.txt
 python -m jupyter lab Student_Depression_Review.ipynb
 ```
 
-Run all cells from the repository root. The verified run used Python 3.14.4 and the numerical package versions pinned in `requirements.txt`. The original notebook has a separate, unpinned dependency list in `requirements-original.txt`; its full exploratory search was not rerun during this update.
+Run all cells from the repository root. The verified run used Python 3.14.4 and the numerical package versions pinned in `requirements.txt`. The original exploratory search was not rerun; its dependencies are in `requirements-original.txt`.
 
 To redraw the README figures from the saved review metrics:
 
