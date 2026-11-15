@@ -1,314 +1,61 @@
-# Student Depression Prediction Using Machine Learning
+# Student depression classification
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.0+-orange.svg)
-![License](https://img.shields.io/badge/License-Academic-green.svg)
-![Status](https://img.shields.io/badge/Status-Complete-success.svg)
-![ML](https://img.shields.io/badge/ML-Classification-red.svg)
+A tabular classification study comparing preprocessing choices and classifiers on the Student Depression Dataset. The repository contains the original Machine Learning coursework and a smaller, executable review of its final logistic regression model.
 
-A binary classification project predicting student depression based on lifestyle, demographic, academic, and psychological indicators. Developed as part of the Machine Learning Module 1 (2024/2025) for the Bachelor in Artificial Intelligence at the University of Pavia (UNIPV).
+[Reviewed notebook](Student_Depression_Review.ipynb) · [Original coursework](MLProjectDiPilato.ipynb) · [Recorded review results](results/review.json)
 
-<p align="center">
-  <img src="images/confusion_matrix.png" alt="Confusion Matrix" width="400"/>
-  <img src="images/learning_curve.png" alt="Learning Curve" width="400"/>
-</p>
+## Results
 
-## 🎯 Project Overview
+![F1 and balanced accuracy for the majority baseline and two logistic models](images/review-comparison.png)
 
-Depression among students is a growing concern in academic environments. This project employs machine learning techniques to identify patterns that contribute to student depression, enabling early detection and intervention.
+| Model | F1, positive class | Accuracy | Balanced accuracy | ROC AUC |
+| :--- | ---: | ---: | ---: | ---: |
+| Majority-class baseline | 0.7386 | 0.5855 | 0.5000 | 0.5000 |
+| L1 logistic regression | **0.8821** | **0.8594** | **0.8514** | **0.9290** |
+| L1 logistic, without suicidal-thought item | 0.8382 | 0.8061 | 0.7955 | 0.8796 |
 
-**Objective:** Build a robust binary classification model capable of predicting whether a student is experiencing depression (1) or not (0).
+The review was rerun in November 2026 on 5,576 held-out rows. The original February 2025 notebook reported F1 **0.8791** and accuracy **0.8560**. Both use the same historical split; the revised result is a retrospective comparison, not a fresh independent test.
 
-### 🏆 Key Achievements
+The suicidal-thought question accounts for a noticeable part of the predictive performance. Removing it lowers F1 from 0.8821 to 0.8382. Its timing relative to the target label is undocumented, so the full-feature score should not be interpreted as prediction of future onset.
 
-- **F1 Score:** 87%+ on test set
-- **Systematic approach** with nested cross-validation
-- **Real-world simulation** with controlled missing data
-- **Comprehensive preprocessing** pipeline for diverse feature types
+## What the review changes
 
-## 📊 Dataset
+The original notebook explores Perceptron, logistic regression, random forest and XGBoost, including resampling and dimensionality reduction. The review concentrates on the final L1 logistic model:
 
-**Source:** [Student Depression Dataset – Kaggle](https://www.kaggle.com/datasets/hopesb/student-depression-dataset)
+- Corrects sleep-duration categories to their natural order.
+- Fits imputation, encoding and scaling inside cross-validation pipelines.
+- Selects regularization strength separately for the full and reduced feature sets with five-fold stratified cross-validation.
+- Adds a majority-class baseline and computes each confusion matrix from the estimator it describes.
 
-The dataset contains responses from students across multiple dimensions:
+![Confusion matrices for the two reviewed logistic models](images/review-confusion-matrices.png)
 
-### Features
-- **Demographics:** Age, Gender, City, Degree
-- **Academic:** CGPA, Academic Pressure, Study Satisfaction, Work/Study Hours
-- **Lifestyle:** Sleep Duration, Dietary Habits, Physical Activity
-- **Psychological:** Suicidal Thoughts, Family History of Mental Illness, Financial Stress
+The original notebook remains available as the submitted work. Its exploratory search includes invalid oversampling candidates and a shifted XGBoost learning-rate distribution; those searches are not used by the reviewed models.
 
-### Target Variable
-- **Depression:** Binary classification (0 = No, 1 = Yes)
+## Data and protocol
 
-### Dataset Statistics
-- **Total Samples:** 481 students
-- **Features:** 13 (after preprocessing)
-- **Class Distribution:** Slightly imbalanced (addressed with SMOTE)
+The [Student Depression Dataset](https://www.kaggle.com/datasets/hopesb/student-depression-dataset) contains 27,901 rows and 18 columns. Historical cleaning retains 27,880 rows, split into 22,304 training and 5,576 test examples with seed 30 and stratification. As part of the original missing-data exercise, the same randomly chosen 10% of rows are masked in four fields. The review preserves this protocol for comparison.
 
-## 🔧 Methodology
+The target is the CSV's binary `Depression` label. Its assessment method and timing are not established in this project. There is no clinical or prospective validation, and the model is not a diagnostic tool. The notebook checks the input file's SHA-256 before fitting.
 
-### 1. Data Preprocessing
+## Run the review
 
-**Feature Engineering:**
-- Renamed columns for better readability
-- Removed irrelevant features: `id`, `Profession`, `Work Pressure`, `Job Satisfaction`
-- Consolidated high-cardinality categorical variables:
-  - **Degree:** Grouped into Pre-University, Undergraduate, Postgraduate, PhD
-  - **City:** Categorized into Major Metropolitan, Industrial/Commercial, Suburban, Other
-
-**Missing Data Handling:**
-- Intentionally introduced 10% missing values to simulate real-world scenarios
-- Treated infrequent 'Others' categories as missing data
-- Dropped rows with missing values in `Financial Stress` and `Sleep Duration` (minimal impact)
-- Applied imputation strategies for remaining missing data
-
-### 2. Feature Transformation Pipeline
-
-Created specialized pipelines for different feature types:
-
-| Feature Type | Transformation | Applied To |
-|--------------|----------------|------------|
-| Numerical | Standard Scaling | Age, CGPA, Academic Pressure, etc. |
-| Binary Categorical | One-Hot Encoding | Suicidal Thoughts, Family History |
-| Ordinal | Ordinal Encoding + Scaling | Sleep Duration, Dietary Habits |
-| Nominal Categorical | Imputation + One-Hot Encoding | Gender, City, Degree |
-
-### 3. Model Selection & Optimization
-
-**Approach:** Nested Cross-Validation with Randomized Search
-
-**Explored Components:**
-
-#### Sampling Techniques
-- None (baseline)
-- SMOTE (Synthetic Minority Over-sampling)
-- RandomOverSampler
-
-#### Dimensionality Reduction
-- None
-- PCA (Principal Component Analysis)
-- LDA (Linear Discriminant Analysis)
-- Sequential Feature Selection
-
-#### Classifiers
-- Perceptron
-- **Logistic Regression** (L1/L2 regularization) ⭐ **Selected**
-- Random Forest
-- XGBoost
-
-**Hyperparameter Search:**
-- Initial broad search: ~500+ configurations
-- 2-fold CV for initial screening
-- 5-fold CV for final evaluation
-- Refined search around best-performing model
-- F1 score as primary evaluation metric
-
-### 4. Final Model
-
-**Selected Architecture:**
-```python
-Pipeline:
-├── Feature Transformation (ColumnTransformer)
-│   ├── Numerical Features → StandardScaler
-│   ├── Categorical Features → OneHotEncoder
-│   └── Ordinal Features → OrdinalEncoder + StandardScaler
-│
-└── Logistic Regression
-    ├── Penalty: L1 (Lasso)
-    ├── Solver: saga
-    └── C (Regularization): ~10 (optimized)
-```
-
-## 📈 Results
-
-### Model Performance
-
-| Metric | Test Set Score | Description |
-|--------|----------------|-------------|
-| **F1 Score** | **0.87+** | Harmonic mean of precision and recall |
-| **Accuracy** | **0.87+** | Overall correctness |
-| **Precision** | **0.87+** | True positives / Predicted positives |
-| **Recall** | **0.87+** | True positives / Actual positives |
-
-### Performance Visualization
-
-<p align="center">
-  <img src="images/validation_curve.png" alt="Validation Curve" width="600"/>
-</p>
-
-### Key Insights
-
-**Learning Curve Analysis:**
-- Model shows good convergence with increasing training data
-- Minimal gap between training and validation scores indicates low overfitting
-- Performance stabilizes around 60-70% of training data
-- Training F1: ~0.90, Validation F1: ~0.87
-
-**Validation Curve Analysis:**
-- Optimal regularization strength (C) identified in range [5, 15]
-- Model robust to hyperparameter variations within this range
-- Clear plateau indicating good generalization
-
-**Confusion Matrix Insights:**
-- Balanced performance across both classes
-- Low false positive and false negative rates
-- Effective handling of class imbalance
-
-## 🚀 Installation & Usage
-
-### Prerequisites
-```bash
-Python 3.8 or higher
-```
-
-### Quick Start
-
-1. **Clone the repository:**
 ```bash
 git clone https://github.com/pdmdp/student-depression-project.git
 cd student-depression-project
+python -m pip install -r requirements.txt
+python -m jupyter lab Student_Depression_Review.ipynb
 ```
 
-2. **Install dependencies:**
+Run all cells from the repository root. The verified run used Python 3.14.4 and the numerical package versions pinned in `requirements.txt`. The original notebook has a separate, unpinned dependency list in `requirements-original.txt`; its full exploratory search was not rerun during this update.
+
+To redraw the README figures from the saved review metrics:
+
 ```bash
-pip install -r requirements.txt
+python scripts/plot_results.py
 ```
 
-Or run the provided installer:
-```bash
-python Init.py
-```
+## Author
 
-3. **Download the dataset:**
-- Visit [Kaggle Dataset](https://www.kaggle.com/datasets/hopesb/student-depression-dataset)
-- Download `StudentDepressionDataset.csv`
-- Place it in the `/work/` directory
+**Matteo Pietro Di Pilato** · Machine Learning, Module 1, BSc in Artificial Intelligence, academic year 2024/25.
 
-4. **Run the notebook:**
-```bash
-jupyter notebook MLProjectDiPilato.ipynb
-```
-
-### Alternative: Google Colab
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1x3HEL5WgUOLF8_c6oeV3ptx37Nws-WXI)
-
-## 📁 Project Structure
-
-```
-student-depression-project/
-│
-├── MLProjectDiPilato.ipynb       # Main analysis notebook
-├── Init.py                        # Dependency installer
-├── requirements.txt               # Python dependencies
-├── StudentDepressionDataset.csv   # Dataset (add to /work/)
-├── README.md                      # Project documentation
-│
-└── images/                        # Visualizations (optional)
-    ├── confusion_matrix.png
-    ├── learning_curve.png
-    └── validation_curve.png
-```
-
-## 🔍 Key Features
-
-✅ **Real-world data simulation** with controlled missing values  
-✅ **Comprehensive preprocessing pipeline** handling diverse feature types  
-✅ **Systematic model selection** via nested cross-validation  
-✅ **Class imbalance handling** with SMOTE and class weighting  
-✅ **Hyperparameter optimization** with RandomizedSearchCV (500+ configurations)  
-✅ **Robust evaluation** using multiple metrics and visualization  
-✅ **Reproducible results** with fixed random seeds
-
-## 🧪 Technical Highlights
-
-### Preprocessing Innovation
-- Custom `ColumnTransformer` with specialized pipelines for each feature type
-- Intelligent handling of high-cardinality categorical variables
-- Strategic treatment of missing data based on feature characteristics
-
-### Model Selection Process
-- Explored 4 different classifiers
-- Tested 3 sampling techniques
-- Evaluated 4 dimensionality reduction methods
-- Total configurations evaluated: 500+
-
-### Validation Strategy
-- Nested cross-validation for unbiased performance estimation
-- Stratified K-Fold to maintain class distribution
-- Multiple performance metrics for comprehensive evaluation
-
-## 🎓 Academic Context
-
-This project demonstrates proficiency in:
-- End-to-end machine learning pipeline development
-- Advanced preprocessing techniques for mixed data types
-- Model selection and hyperparameter tuning strategies
-- Cross-validation and performance evaluation
-- Handling imbalanced datasets
-- Data visualization and interpretation
-
-**Course:** Machine Learning Module 1  
-**Academic Year:** 2024/2025  
-**Institution:** University of Pavia (UNIPV)  
-**Degree Program:** Bachelor in Artificial Intelligence
-
-## ⚠️ Ethical Considerations
-
-**Important:** This model is developed for educational purposes and demonstrates machine learning concepts. Mental health prediction requires:
-
-- ✋ **Clinical validation** before real-world deployment
-- 🔒 **Privacy protection** and informed consent
-- 👨‍⚕️ **Integration with professional** mental health services
-- 📊 **Awareness of model limitations** and potential biases
-- 🎯 **Responsible use** as a screening tool, not diagnosis
-
-**This model should NOT be used as a standalone diagnostic tool.**
-
-### Limitations
-- Limited dataset size (481 samples)
-- Potential sampling bias (Kaggle dataset)
-- Self-reported data may contain inaccuracies
-- Model trained on specific demographic (may not generalize globally)
-- Temporal aspects of depression not captured
-
-
-## 📚 References
-
-1. Student Depression Dataset - [Kaggle](https://www.kaggle.com/datasets/hopesb/student-depression-dataset)
-2. Scikit-learn Documentation - [sklearn.org](https://scikit-learn.org/)
-3. Imbalanced-learn Documentation - [imbalanced-learn.org](https://imbalanced-learn.org/)
-4. SMOTE: Synthetic Minority Over-sampling Technique - Chawla et al. (2002)
-
-## 👨‍💻 Author
-
-**Matteo Di Pilato**  
-Bachelor in Artificial Intelligence  
-University of Pavia (UNIPV)  
-Academic Year 2024/2025
-
-
-## 📄 License
-
-This project is developed for academic purposes as part of the Machine Learning Module 1 course at the University of Pavia.
-
-## 🙏 Acknowledgments
-
-- **Dataset:** Hope Barnett (Kaggle)
-- **Institution:** University of Pavia, Department of Computer Engineering
-- **Course Instructors:** Machine Learning Module 1 teaching team
-- **Libraries:** Scikit-learn, XGBoost, Imbalanced-learn communities
-
----
-
-<p align="center">
-  ⭐ If you found this project helpful, please consider giving it a star!<br>
-  💡 Feel free to fork and adapt for your own learning
-</p>
-
----
-
-**Disclaimer:** This is an educational project. The model's predictions should not be used for actual medical diagnosis or treatment decisions.
-
-
+The [MIT license](LICENSE) covers the project code. The source dataset retains its own terms.

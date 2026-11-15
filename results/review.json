@@ -1,0 +1,66 @@
+{
+  "provenance": "Reviewed notebook rerun on 2026-11-15; historical 80/20 split reused.",
+  "metrics": {
+    "Majority baseline": {
+      "F1 (label 1)": 0.7386042302906911,
+      "Precision": 0.585545193687231,
+      "Recall": 1.0,
+      "Accuracy": 0.585545193687231,
+      "Balanced accuracy": 0.5,
+      "ROC AUC": 0.5
+    },
+    "L1 logistic (all predictors)": {
+      "F1 (label 1)": 0.8821052631578947,
+      "Precision": 0.8664697193500739,
+      "Recall": 0.8983154670750383,
+      "Accuracy": 0.8593974175035868,
+      "Balanced accuracy": 0.8513645704046762,
+      "ROC AUC": 0.9290431341417271
+    },
+    "L1 logistic (without suicidal-thought item)": {
+      "F1 (label 1)": 0.8382462965733952,
+      "Precision": 0.8194850789935635,
+      "Recall": 0.8578866768759571,
+      "Accuracy": 0.8061334289813487,
+      "Balanced accuracy": 0.7954513436305359,
+      "ROC AUC": 0.8795707061838216
+    }
+  },
+  "matrices": {
+    "Majority baseline": [
+      [
+        0,
+        2311
+      ],
+      [
+        0,
+        3265
+      ]
+    ],
+    "L1 logistic (all predictors)": [
+      [
+        1859,
+        452
+      ],
+      [
+        332,
+        2933
+      ]
+    ],
+    "L1 logistic (without suicidal-thought item)": [
+      [
+        1694,
+        617
+      ],
+      [
+        464,
+        2801
+      ]
+    ]
+  },
+  "raw_rows": 27901,
+  "clean_rows": 27880,
+  "train_rows": 22304,
+  "test_rows": 5576,
+  "data_sha256": "a3e159e246789be5a61dcc7b4290fbc238f0140f3d95727585af50a61fd35404"
+}
