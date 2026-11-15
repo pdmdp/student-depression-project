@@ -1,12 +1,23 @@
 # Student depression classification
 
-A tabular classification study comparing preprocessing choices and classifiers on the Student Depression Dataset. The repository contains the original Machine Learning coursework and a smaller, executable review of its final logistic regression model.
+This project examines how preprocessing and input questions affect classification of a survey dataset's binary depression label. It compares logistic regression with a majority-class baseline and checks what changes when the suicidal-thought item is removed.
 
-[Reviewed notebook](Student_Depression_Review.ipynb) · [Original coursework](MLProjectDiPilato.ipynb) · [Recorded review results](results/review.json)
+The reviewed L1 logistic model reaches **F1 of 0.8821** on the historical test split. Removing that item lowers F1 to **0.8382**, showing that a substantial part of the observed performance depends on which questions are available.
+
+[Reviewed notebook](Student_Depression_Review.ipynb) · [Original coursework](MLProjectDiPilato.ipynb) · [Results](results/review.json)
+
+## Approach
+
+The original coursework explores Perceptron, logistic regression, random forest and XGBoost, including resampling and dimensionality reduction. The focused review studies the final L1 logistic model with a more controlled preprocessing pipeline:
+
+- Imputation, encoding and scaling are fitted inside cross-validation.
+- Sleep-duration categories follow their natural order.
+- Regularization is selected separately for the full and reduced feature sets using five-fold stratified cross-validation.
+- A majority-class baseline makes class imbalance visible, and each confusion matrix comes from the model it describes.
 
 ## Results
 
-![F1 and balanced accuracy for the majority baseline and two logistic models](images/review-comparison.png)
+![F1 and balanced accuracy for the baseline and the two logistic models](images/review-comparison.png)
 
 | Model | F1, positive class | Accuracy | Balanced accuracy | ROC AUC |
 | :--- | ---: | ---: | ---: | ---: |
@@ -14,30 +25,25 @@ A tabular classification study comparing preprocessing choices and classifiers o
 | L1 logistic regression | **0.8821** | **0.8594** | **0.8514** | **0.9290** |
 | L1 logistic, without suicidal-thought item | 0.8382 | 0.8061 | 0.7955 | 0.8796 |
 
-The review was rerun in November 2026 on 5,576 held-out rows. The original February 2025 notebook reported F1 **0.8791** and accuracy **0.8560**. Both use the same historical split; the revised result is a retrospective comparison, not a fresh independent test.
+The majority baseline already has a positive-class F1 of 0.7386, despite balanced accuracy of 0.5. That is why F1 alone would give an incomplete picture. Both logistic models improve on the baseline, while the reduced feature set has lower performance across all four metrics.
 
-The suicidal-thought question accounts for a noticeable part of the predictive performance. Removing it lowers F1 from 0.8821 to 0.8382. Its timing relative to the target label is undocumented, so the full-feature score should not be interpreted as prediction of future onset.
+![Confusion matrices for the reviewed logistic models](images/review-confusion-matrices.png)
 
-## What the review changes
+The original notebook reported F1 0.8791 and accuracy 0.8560. The review uses the same historical split, so its comparison with the original is retrospective rather than an independent new test.
 
-The original notebook explores Perceptron, logistic regression, random forest and XGBoost, including resampling and dimensionality reduction. The review concentrates on the final L1 logistic model:
+## Contribution
 
-- Corrects sleep-duration categories to their natural order.
-- Fits imputation, encoding and scaling inside cross-validation pipelines.
-- Selects regularization strength separately for the full and reduced feature sets with five-fold stratified cross-validation.
-- Adds a majority-class baseline and computes each confusion matrix from the estimator it describes.
+**Matteo Pietro Di Pilato** · Machine Learning, Module 1, BSc in Artificial Intelligence, 2024/25. The work covers preprocessing, classifier comparisons, model selection and the later feature-sensitivity review.
 
-![Confusion matrices for the two reviewed logistic models](images/review-confusion-matrices.png)
+## Limits and next steps
 
-The original submission is retained separately. Its exploratory resampling and XGBoost searches are not used by the reviewed models.
+The target is the dataset's `Depression` label. Its assessment method and timing are not established here, nor is the timing of the suicidal-thought item relative to that label. This is a classification study, with no clinical or prospective validation; it is not a diagnostic tool or a model of future onset.
 
-## Data and protocol
+A stronger evaluation would use an independently collected sample with documented label definitions and measurement times. The reduced-feature comparison helps identify a dependency, but does not establish that the remaining inputs are sufficient for clinical use.
 
-The [Student Depression Dataset](https://www.kaggle.com/datasets/hopesb/student-depression-dataset) contains 27,901 rows and 18 columns. Historical cleaning retains 27,880 rows, split into 22,304 training and 5,576 test examples with seed 30 and stratification. As part of the original missing-data exercise, the same randomly chosen 10% of rows are masked in four fields. The review preserves this protocol for comparison.
+## Data and reproduction
 
-The target is the CSV's binary `Depression` label. Its assessment method and timing are not established in this project. There is no clinical or prospective validation, and the model is not a diagnostic tool. The notebook checks the input file's SHA-256 before fitting.
-
-## Run the review
+The [Student Depression Dataset](https://www.kaggle.com/datasets/hopesb/student-depression-dataset) contains 27,901 rows and 18 columns. Historical cleaning retains 27,880 rows: 22,304 training and 5,576 test examples, using seed 30 and stratification. The review preserves the original missing-data exercise, masking the same randomly chosen 10% of rows in four fields.
 
 ```bash
 git clone https://github.com/pdmdp/student-depression-project.git
@@ -46,16 +52,6 @@ python -m pip install -r requirements.txt
 python -m jupyter lab Student_Depression_Review.ipynb
 ```
 
-Run all cells from the repository root. The verified run used Python 3.14.4 and the numerical package versions pinned in `requirements.txt`. The original exploratory search was not rerun; its dependencies are in `requirements-original.txt`.
+Run the notebook from the repository root. It verifies the input checksum before fitting. `requirements.txt` pins the reviewed environment; the original exploration has separate dependencies in `requirements-original.txt`. Run `python scripts/plot_results.py` to redraw the figures from saved metrics.
 
-To redraw the README figures from the saved review metrics:
-
-```bash
-python scripts/plot_results.py
-```
-
-## Author
-
-**Matteo Pietro Di Pilato** · Machine Learning, Module 1, BSc in Artificial Intelligence, academic year 2024/25.
-
-The [MIT license](LICENSE) covers the project code. The source dataset retains its own terms.
+Code: [MIT](LICENSE). The source dataset retains its own terms.
